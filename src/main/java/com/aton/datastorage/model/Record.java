@@ -14,6 +14,12 @@ public class Record {
     private String name;
     private Double value;
 
+    public Record(Long account, String name, Double value) {
+        this.account = account;
+        this.name = name;
+        this.value = value;
+    }
+
     public boolean isNew() {
         return this.id == null;
     }
