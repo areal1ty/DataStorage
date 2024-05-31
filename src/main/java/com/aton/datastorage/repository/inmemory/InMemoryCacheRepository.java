@@ -15,7 +15,6 @@ import static com.aton.datastorage.repository.searchkey.IntegerSK.toIntegerSK;
 import static com.aton.datastorage.repository.searchkey.LongSK.toLongSK;
 import static com.aton.datastorage.repository.searchkey.StringSK.toStringSK;
 
-
 @Repository
 public class InMemoryCacheRepository implements CacheRepository {
 
@@ -36,7 +35,7 @@ public class InMemoryCacheRepository implements CacheRepository {
 
     @Override
     public boolean delete(IntegerSK id) {
-        return idRepository.remove(id) != null;
+        return deleteInRepositories(id);
     }
 
     @Override
@@ -76,6 +75,14 @@ public class InMemoryCacheRepository implements CacheRepository {
         accountRepository.computeIfPresent(toLongSK(record.getAccount()), (account, oldRecord) -> record);
         valueRepository.computeIfPresent(toDoubleSK(record.getValue()), (value, oldRecord) -> record);
         return record;
+    }
+
+    private boolean deleteInRepositories(IntegerSK id) {
+        Record r = idRepository.get(id);
+        return idRepository.remove(id) != null
+                || nameRepository.remove(toStringSK(r.getName())) != null
+                || accountRepository.remove(toLongSK(r.getAccount())) != null
+                || valueRepository.remove(toDoubleSK(r.getValue())) != null;
     }
 
 }
